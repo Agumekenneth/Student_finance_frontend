@@ -63,7 +63,7 @@ export default function Login({ setToken }) {
               align="center"
               sx={{ fontWeight: 800, color: '#1976d2' }}
             >
-              Student Finance Login
+              Student Finance Tracker Login
             </Typography>
 
             <form onSubmit={handleSubmit}>
