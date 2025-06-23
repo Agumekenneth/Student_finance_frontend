@@ -13,22 +13,26 @@ import { useNavigate } from 'react-router-dom';
 import { login } from '../utils/api';
 
 export default function Login({ setToken }) {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [snackbar, setSnackbar] = useState({ open: false, message: '' });
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = await login(username, password);
 
-    if (data.token) {
-      setToken(data.token);
-      localStorage.setItem('token', data.token);
-      setSnackbar({ open: true, message: 'Login successful!' });
-      navigate('/dashboard');
-    } else {
-      setSnackbar({ open: true, message: data.error || 'Login failed' });
+    try {
+      const data = await login(email, password);
+      if (data.token) {
+        setToken(data.token);
+        localStorage.setItem('token', data.token);
+        setSnackbar({ open: true, message: 'Login successful!' });
+        navigate('/dashboard');
+      } else {
+        setSnackbar({ open: true, message: 'Login failed. Please check your credentials.' });
+      }
+    } catch (error) {
+      setSnackbar({ open: true, message: error.message || 'Login failed' });
     }
   };
 
@@ -64,12 +68,13 @@ export default function Login({ setToken }) {
 
             <form onSubmit={handleSubmit}>
               <TextField
-                label="Username"
+                label="Email"
+                type="email"
                 fullWidth
                 margin="normal"
                 variant="outlined"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
               <TextField
@@ -93,7 +98,7 @@ export default function Login({ setToken }) {
               </Button>
 
               <Button
-                type="button" // ✅ Prevents unintended form submission
+                type="button"
                 variant="text"
                 fullWidth
                 sx={{ mt: 1, fontWeight: 600 }}
