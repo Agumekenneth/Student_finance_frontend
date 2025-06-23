@@ -12,7 +12,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { login } from '../utils/api';
 
-export default function Login({ setToken }) {
+export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [snackbar, setSnackbar] = useState({ open: false, message: '' });
@@ -23,11 +23,16 @@ export default function Login({ setToken }) {
 
     try {
       const data = await login(email, password);
+
       if (data.token) {
-        setToken(data.token);
+        // ✅ Save token to localStorage
         localStorage.setItem('token', data.token);
+
+        // ✅ Show success message
         setSnackbar({ open: true, message: 'Login successful!' });
-        navigate('/dashboard');
+
+        // ✅ Redirect after brief delay
+        setTimeout(() => navigate('/dashboard'), 1000);
       } else {
         setSnackbar({ open: true, message: 'Login failed. Please check your credentials.' });
       }
@@ -104,7 +109,7 @@ export default function Login({ setToken }) {
                 sx={{ mt: 1, fontWeight: 600 }}
                 onClick={() => navigate('/register')}
               >
-                Don't have an account? Register
+                Don’t have an account? Register
               </Button>
             </form>
           </Stack>
